@@ -10,9 +10,7 @@ var stringifyJSON = function(obj) {
   if (obj === null) {
     return 'null';
   }
-  /*if (obj.length === 0 || obj === undefined) {
-    return '';
-  }*/
+
   if (typeof obj === 'boolean') {
     return String(obj);
   }
@@ -20,12 +18,14 @@ var stringifyJSON = function(obj) {
     return String(obj);
   }
   if (typeof obj === 'string') {
+    console.log('STRING PASSED IN');
     return '"' + obj + '"';
   }
 
 
 
   if (typeof obj === 'object') {
+    console.log("ARRAY PASSED IN");
     if (Array.isArray(obj)) {
       //treat like an true array
       if (obj.length === 0) {
@@ -48,12 +48,28 @@ var stringifyJSON = function(obj) {
 
       //for objects (not arrays)
     } else {
+
       if (Object.keys(obj).length === 0) {
         return '{}';
       }
       //treat like an obj
-      // var lastKey = Object.keys(obj).pop();
-      // console.log(lastKey)
+      var lastKey = Object.keys(obj).pop();
+      result += '{';
+      for (let key in obj) {
+        console.log('TYPE:', typeof key);
+        //final bit about functions and undefined...
+        // if (typeof obj[key] === 'function') {
+        //   console.log('WE GOT A FN');
+        //   result += {};
+        // }
+        if (key !== lastKey) {
+          result += stringifyJSON(key) + ':' + stringifyJSON(obj[key]) + ',';
+        } else {
+          result += stringifyJSON(key) + ':' + stringifyJSON(obj[key]);
+        }
+      }
+      result += '}';
+
     }
   }
 
